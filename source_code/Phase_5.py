@@ -7,14 +7,14 @@ import os
 import cv2
 
 # Paths (modify as needed)
-TEST_VIDPATH = "D:/Project_Kitty_Pclub/test/Segmented clips/01_Penalties"
-TEST_BOX_PATH = "D:/Project_Kitty_Pclub/test/Box_path/01_Penalties"
-TEST_LANDMARK_PATH = "D:/Project_Kitty_Pclub/test/Landmarks/01_Penalties"
+TEST_VIDPATH = "/Project_Kitty_Pclub/test/Segmented clips/01_Penalties"
+TEST_BOX_PATH = "/Project_Kitty_Pclub/test/Box_path/01_Penalties"
+TEST_LANDMARK_PATH = "/Project_Kitty_Pclub/test/Landmarks/01_Penalties"
 
 class PenaltyAnalyzerApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("⚽ Penalty Kick Analyzer")
+        self.root.title("Penalty Kick Analyzer")
         
         # GUI Elements
         self.label = tk.Label(root, text="Upload a Penalty Video (MP4)")
@@ -89,8 +89,28 @@ class PenaltyAnalyzerApp:
             visualize.main(original_seq, pred_right, pred_left)
             
             messagebox.showinfo("Success", "Analysis complete! Check the visualization.")
-        
+            
+            lst = [TEST_VIDPATH, TEST_BOX_PATH, TEST_LANDMARK_PATH] 
+            for directory in lst:  
+                for filename in os.listdir(directory):  
+                    file_path = os.path.join(directory, filename)
+                    if os.path.isfile(file_path):  
+                        try:
+                            os.unlink(file_path) 
+                            print(f"Deleted: {file_path}")  
+                        except Exception as e:
+                            print(f"Failed to delete {file_path}: {e}")
         except Exception as e:
+            lst = [TEST_VIDPATH, TEST_BOX_PATH, TEST_LANDMARK_PATH] 
+            for directory in lst:  
+                for filename in os.listdir(directory):  
+                    file_path = os.path.join(directory, filename)
+                    if os.path.isfile(file_path):  
+                        try:
+                            os.unlink(file_path) 
+                            print(f"Deleted: {file_path}")  
+                        except Exception as e:
+                            print(f"Failed to delete {file_path}: {e}")
             messagebox.showerror("Error", f"Failed: {str(e)}")
         
         self.status_label.config(text="Done!")
