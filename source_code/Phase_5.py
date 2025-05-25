@@ -6,7 +6,6 @@ from Phase_4 import NN_Test, visualize
 import os
 import cv2
 
-# Paths (modify as needed)
 TEST_VIDPATH = "/Project_Kitty_Pclub/test/Segmented clips/01_Penalties"
 TEST_BOX_PATH = "/Project_Kitty_Pclub/test/Box_path/01_Penalties"
 TEST_LANDMARK_PATH = "/Project_Kitty_Pclub/test/Landmarks/01_Penalties"
@@ -16,8 +15,8 @@ class PenaltyAnalyzerApp:
         self.root = root
         self.root.title("Penalty Kick Analyzer")
         
-        # GUI Elements
-        self.label = tk.Label(root, text="Upload a Penalty Video (MP4)")
+
+        self.label = tk.Label(root, text="Upload a Penalty Video (MP4), Recommended to be 2-3 seconds long")
         self.label.pack(pady=10)
         
         self.upload_btn = tk.Button(root, text="Browse Video", command=self.upload_video)
@@ -50,23 +49,19 @@ class PenaltyAnalyzerApp:
             return
         
         self.status_label.config(text="Detecting players... (Check OpenCV window)")
-        self.root.update()  # Force GUI update
+        self.root.update()
         
-        # Phase 2: Detect and track players (show OpenCV window)
         self.all_players = detector_tracker.main(
             self.video_path,
             os.path.splitext(os.path.basename(self.video_path))[0],
             TEST_BOX_PATH
         )
-        
-        # Ask for player ID after detection
         player_id = simpledialog.askinteger(
             "Input", 
             "Enter the striker's Player ID (seen in OpenCV window):",
             parent=self.root,
             minvalue=0
         )
-        
         if player_id is not None:
             self.analyze_player(player_id)
     
@@ -74,17 +69,13 @@ class PenaltyAnalyzerApp:
         try:
             self.status_label.config(text="Extracting pose...")
             self.root.update()
-            
-            # Phase 3: Pose tracking for selected player
             pose_tracker.main(
                 self.all_players,
                 self.video_path,
                 os.path.splitext(os.path.basename(self.video_path))[0],
                 TEST_LANDMARK_PATH,
-                player_id  # Pass the selected player ID
+                player_id 
             )
-            
-            # Phase 4: NN prediction and visualization
             original_seq, pred_right, pred_left = NN_Test.main(TEST_LANDMARK_PATH)
             visualize.main(original_seq, pred_right, pred_left)
             

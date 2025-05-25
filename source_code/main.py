@@ -11,9 +11,9 @@ def main():
     boxx_path = boxx_path.replace("\\","/")
     landmark_path = "\Project_Kitty_Pclub\data\Landmarks\\01_Penalties"
     landmark_path = landmark_path.replace("\\","/")
-    download.main()
-    video_segment.main()
-    data_augmentation.main("/Project_Kitty_Pclub/data/Segmented clips/01_Penalties")
+    download.main() # I recommend commenting these and using Google drive to download the segmented or raw data to save time
+    video_segment.main() # I recommend commenting these and using Google drive to download the segmented or raw data to save time
+    data_augmentation.main("/Project_Kitty_Pclub/data/Segmented clips/01_Penalties") # I recommend commenting these and using Google drive to download the segmented or raw data to save time
     for file in os.listdir(vidpath):
         if not file.endswith(".mp4"):
             continue
