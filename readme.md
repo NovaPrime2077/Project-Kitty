@@ -8,7 +8,7 @@ link for raw and segmented videos - https://drive.google.com/drive/folders/1TfuG
 
 link for the detailed report on the model - https://github.com/NovaPrime2077/Project-Kitty/blob/main/Report.pdf
 
-link of how to run **Phase_5.py** - 
+link of how to run **Phase_5.py** - https://drive.google.com/file/d/1Z13ap0JrdWhW26oNtDBuQ1ljHtAXRFGy/view?usp=drive_link
 ## Basic Structure of the Repo 
 Here is the basic structure of the repo, please note to follow the exact structure otherwise programs might fail to run on your local machine.
 ```
