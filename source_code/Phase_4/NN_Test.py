@@ -1,30 +1,22 @@
 def main(Landmarks_folder):
     import os
     import numpy as np
-    import tensorflow as tf
-    from tensorflow.keras.models import Sequential
-    from tensorflow.keras.layers import Conv1D, LSTM, Dense, Dropout, InputLayer, Masking, TimeDistributed
     from glob import glob
-    from sklearn.model_selection import train_test_split
     from tensorflow import keras 
-    right = keras.models.load_model(r"D:\Project_Kitty_Pclub\source_code\NovaPrime2077_right.keras")
-    left = keras.models.load_model(r"D:\Project_Kitty_Pclub\source_code\NovaPrime2077_left.keras")
+    right = keras.models.load_model(r"\Project_Kitty_Pclub\source_code\NovaPrime2077_right.keras") #pretrained models
+    left = keras.models.load_model(r"\Project_Kitty_Pclub\source_code\NovaPrime2077_left.keras")
     right.summary()
     left.summary()
 
 
     def preprocess_pipeline(Landmarks_folder):
-        """Enhanced preprocessing pipeline for pose landmark data"""
-        
-        # ====== Constants ======
         NUM_FRAMES = 120
-        NUM_KEYPOINTS = 33  # MediaPipe provides 33 keypoints (0-32)
+        NUM_KEYPOINTS = 33  
         LOWER_BODY_INDICES = list(range(23, 33))  # Keypoints 23-32 (10 keypoints)
         FEATURES_PER_KEYPOINT = 4  # x, y, z, visibility
-        TOTAL_FEATURES = len(LOWER_BODY_INDICES) * FEATURES_PER_KEYPOINT  # Now 40
+        TOTAL_FEATURES = len(LOWER_BODY_INDICES) * FEATURES_PER_KEYPOINT
 
         def validate_and_fix_landmarks(landmarks):
-            """Ensure consistent features even with missing data"""
             if landmarks is None:
                 return np.zeros((NUM_KEYPOINTS, FEATURES_PER_KEYPOINT))
             
@@ -42,7 +34,7 @@ def main(Landmarks_folder):
                 valid_frames = [validate_and_fix_landmarks(f) for f in data if f is not None]
 
                 if len(valid_frames) == 0:
-                    print(f"{file_path} skipped: no valid frames")
+                    print(f"{file_path} skipped: Since no valid frames")
                     return None
 
                 sequence = np.array(valid_frames)[:, LOWER_BODY_INDICES, :]
@@ -61,7 +53,6 @@ def main(Landmarks_folder):
                 return None
 
 
-        # ====== Main Processing ======
         print(f"Loading data from {Landmarks_folder}...")
         all_files = sorted(glob(os.path.join(Landmarks_folder, '*.npy')))
 
@@ -74,7 +65,7 @@ def main(Landmarks_folder):
             if processed is not None:
                 processed_data.append(processed)
             else:
-                print(f"❌ Skipping file: {file}")
+                print(f"Skipping file: {file}")
                 skipped += 1
 
         print(f"\nTotal files: {len(all_files)}")
@@ -83,26 +74,18 @@ def main(Landmarks_folder):
 
         
         if not processed_data:
-            raise ValueError("No valid training data found in the specified folder")
+            raise ValueError("Training data not present in the folder")
         
         X = np.array(processed_data)
         print(f"Successfully processed {X.shape[0]} sequences")
         print(f"Final data shape: {X.shape} (samples, frames, features)")
         
         
-        return X
-    # ====== Constants ======
-    NUM_FRAMES = 120  # Fixed sequence length
-    NUM_LOWER_BODY_KEYPOINTS = 10  # MediaPipe lower body indices (23–33)
-    FEATURES_PER_KEYPOINT = 4  # (x, 0y, z, visibility)
-    TOTAL_FEATURES = NUM_LOWER_BODY_KEYPOINTS * FEATURES_PER_KEYPOINT  # 40
-
-
-    # ====== Load Data ======
+        return X 
     X_train = preprocess_pipeline(Landmarks_folder)
     print(X_train.shape)
     
-    print("Loaded", X_train.shape[0], "pose sequences.")
+    print("Pose Sequences have been Loaded ----------->", X_train.shape[0])
     right_val = right.predict(X_train)
     left_val = left.predict(X_train)
 

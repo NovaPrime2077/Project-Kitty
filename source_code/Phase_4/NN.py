@@ -9,17 +9,13 @@ def main(Landmarks_folder,leg):
 
 
     def preprocess_pipeline(Landmarks_folder):
-        """Enhanced preprocessing pipeline for pose landmark data"""
-        
-        # ====== Constants ======
         NUM_FRAMES = 120
-        NUM_KEYPOINTS = 33  # MediaPipe provides 33 keypoints (0-32)
+        NUM_KEYPOINTS = 33 
         LOWER_BODY_INDICES = list(range(23, 33))  # Keypoints 23-32 (10 keypoints)
         FEATURES_PER_KEYPOINT = 4  # x, y, z, visibility
-        TOTAL_FEATURES = len(LOWER_BODY_INDICES) * FEATURES_PER_KEYPOINT  # Now 40
+        TOTAL_FEATURES = len(LOWER_BODY_INDICES) * FEATURES_PER_KEYPOINT 
 
         def validate_and_fix_landmarks(landmarks):
-            """Ensure consistent features even with missing data"""
             if landmarks is None:
                 return np.zeros((NUM_KEYPOINTS, FEATURES_PER_KEYPOINT))
             
@@ -37,7 +33,7 @@ def main(Landmarks_folder,leg):
                 valid_frames = [validate_and_fix_landmarks(f) for f in data if f is not None]
 
                 if len(valid_frames) == 0:
-                    print(f"{file_path} skipped: no valid frames")
+                    print(f"{file_path} skipped: Since no valid frames")
                     return None
 
                 sequence = np.array(valid_frames)[:, LOWER_BODY_INDICES, :]
@@ -55,8 +51,6 @@ def main(Landmarks_folder,leg):
                 print(f"{file_path} skipped due to error: {e}")
                 return None
 
-
-        # ====== Main Processing ======
         print(f"Loading data from {Landmarks_folder}...")
         all_files = sorted([
             f for f in glob(os.path.join(Landmarks_folder, '*.npy'))
@@ -71,7 +65,7 @@ def main(Landmarks_folder,leg):
             if processed is not None:
                 processed_data.append(processed)
             else:
-                print(f"❌ Skipping file: {file}")
+                print(f"Skipping file: {file}")
                 skipped += 1
 
         print(f"\nTotal files: {len(all_files)}")
@@ -91,24 +85,22 @@ def main(Landmarks_folder,leg):
         
         return X_train, X_val
     # ====== Constants ======
-    NUM_FRAMES = 120  # Fixed sequence length
-    NUM_LOWER_BODY_KEYPOINTS = 10  # MediaPipe lower body indices (23–33)
-    FEATURES_PER_KEYPOINT = 4  # (x, 0y, z, visibility)
-    TOTAL_FEATURES = NUM_LOWER_BODY_KEYPOINTS * FEATURES_PER_KEYPOINT  # 40
+    NUM_FRAMES = 120  
+    NUM_LOWER_BODY_KEYPOINTS = 10  
+    FEATURES_PER_KEYPOINT = 4  
+    TOTAL_FEATURES = NUM_LOWER_BODY_KEYPOINTS * FEATURES_PER_KEYPOINT 
 
 
-    # ====== Load Data ======
     X_train, X_val = preprocess_pipeline(Landmarks_folder)
     print(X_train.shape)
     print(X_val.shape)
     
     print("Loaded", X_train.shape[0], "pose sequences.")
 
-    # ====== Model Architecture ======
     model = Sequential([
         InputLayer(shape=(NUM_FRAMES, TOTAL_FEATURES)),  # (120, 40)
 
-        Masking(mask_value=0.0),  # optional if you pad frames with zeros
+        Masking(mask_value=0.0),
 
         Conv1D(64, kernel_size=3, activation='relu', padding='same'),
         Dropout(0.3),
@@ -120,11 +112,10 @@ def main(Landmarks_folder,leg):
         LSTM(64, return_sequences=True),
         Dropout(0.3),
 
-        TimeDistributed(Dense(TOTAL_FEATURES))  # Predict pose per frame
+        TimeDistributed(Dense(TOTAL_FEATURES)) 
     ])
 
 
-    # Compile for sequence regression
     model.compile(
         optimizer=tf.keras.optimizers.Adam(learning_rate=0.0005),
         loss='mean_squared_error'
@@ -132,12 +123,10 @@ def main(Landmarks_folder,leg):
 
     model.summary()
 
-    # ====== Train the Model ======
     model.fit(X_train, X_train, validation_data=(X_val, X_val), epochs=20, batch_size=8)
-    model.save(f"NovaPrime2077_{leg}.keras")  # Save the entire model
+    model.save(f"NovaPrime2077_{leg}.keras")
     print(f"NovaPrime2077_{leg}.keras")
-# Example usage:
-# predict_pose_similarity("test_landmarks/messi.npy")
+
 
 
 

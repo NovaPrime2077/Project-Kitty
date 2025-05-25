@@ -3,9 +3,9 @@ def main():
     from moviepy.editor import VideoFileClip
     import os
 
-    csv_path = r"D:\Project_Kitty_Pclub\data\CSV"
-    raw_video_path = r"D:\Project_Kitty_Pclub\data\Raw videos"
-    output_folder = r"D:\Project_Kitty_Pclub\data\Segmented clips"
+    csv_path = r"\Project_Kitty_Pclub\data\CSV"
+    raw_video_path = r"\Project_Kitty_Pclub\data\Raw videos"
+    output_folder = r"\Project_Kitty_Pclub\data\Segmented clips"
     os.makedirs(output_folder, exist_ok=True)
 
     def second(s, e):
@@ -35,7 +35,7 @@ def main():
         os.makedirs(seg_dir, exist_ok=True)
 
         for i in range(len(data)):
-            video_name = data.iloc[i, 0]  # assumes 2nd column has filename e.g. 'Messi_01.mp4'
+            video_name = data.iloc[i, 0]
             video_path = os.path.join(vid_dir, f"{video_name}.mp4")
 
             if not os.path.exists(video_path):
@@ -43,10 +43,10 @@ def main():
                 continue
             try:
                 clip = VideoFileClip(video_path)
-                start_time, end_time = second(data.iloc[i, 3], data.iloc[i, 4])  # assumes 3rd and 4th columns are start/end time
+                start_time, end_time = second(data.iloc[i, 3], data.iloc[i, 4])  
                 segment = clip.subclip(start_time, end_time)
 
-                out_name = f"{i}_{data.iloc[i, 5]}.mp4"  # assumes 5th column is tag like 'goal', 'foul' etc.
+                out_name = f"{i}_{data.iloc[i, 5]}.mp4"  
                 out_path = os.path.join(seg_dir, out_name)
 
                 segment.write_videofile(out_path, codec="libx264", audio_codec="aac")

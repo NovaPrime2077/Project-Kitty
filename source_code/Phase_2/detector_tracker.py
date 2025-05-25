@@ -1,16 +1,4 @@
 def main(video_path, file, boxx_path):
-    """
-    Runs YOLO object detection and Deep SORT tracking on a video,
-    saves bounding boxes per frame for up to max_ids players.
-
-    Args:
-        video_path (str): Path to the input video file.
-        file (str): Base filename (without extension) used for saving output.
-        boxx_path (str): Directory to save the bounding boxes numpy file.
-
-    Returns:
-        np.ndarray: Array of bounding boxes of shape (frame_count, max_ids, 4).
-    """
     from ultralytics import YOLO
     import cv2
     from deep_sort_realtime.deepsort_tracker import DeepSort
@@ -18,9 +6,8 @@ def main(video_path, file, boxx_path):
     import os
 
     model = YOLO("yolo11m.pt")
-    tracker = DeepSort(max_age=200)
+    tracker = DeepSort(max_age=45)
 
-    # Create output directory if it doesn't exist
     os.makedirs(boxx_path, exist_ok=True)
 
     vid = cv2.VideoCapture(video_path)
@@ -28,7 +15,7 @@ def main(video_path, file, boxx_path):
         raise RuntimeError(f"Cannot open video: {video_path}")
 
     frame_count = int(vid.get(cv2.CAP_PROP_FRAME_COUNT))
-    max_ids = 10  # maximum number of player IDs to track
+    max_ids = 10 
 
     all_bboxes = np.zeros((frame_count, max_ids, 4), dtype=np.int32)
     frame_index = 0
@@ -38,18 +25,16 @@ def main(video_path, file, boxx_path):
         if not ret or frame_index >= frame_count:
             break
 
-        results = model(frame, conf=0.5, device='cuda')[0]
+        results = model(frame, conf=0.5, device='cuda')[0] #CUDA needed for faster running of YOLO
 
         detections = []
         for box in results.boxes:
-            if int(box.cls[0]) != 0:  # only track class 0 (person)
+            if int(box.cls[0]) != 0:
                 continue
             x1, y1, x2, y2 = map(int, box.xyxy[0])
             conf = float(box.conf[0])
             detections.append(([x1, y1, x2 - x1, y2 - y1], conf, 'person'))
-
         tracks = tracker.update_tracks(detections, frame=frame)
-
         for track in tracks:
             if not track.is_confirmed():
                 continue
