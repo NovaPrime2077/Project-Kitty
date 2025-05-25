@@ -61,6 +61,6 @@ The following components are required to run **OffSide** on your native machine:
 Please note that you don't really need Segmented clips and raw videos to run any file **except main.py** because the repo already contains Landmarks and Boxes .npy files to ensure that model runs perfectly. 
 That's all, I wish you will like **OffSide**. Thank you for your patience. 
 ### Author
-$$ *****NovaPrime2077***** $$
+*****NovaPrime2077***** 
 
 
