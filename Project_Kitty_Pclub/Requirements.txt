@@ -1,0 +1,10 @@
+The following components are required to run OffSide on your native machine:
+1. Python
+2. YOLO11 from Ultralytics
+3. DeepSort from deep_sort_realtime
+4. Tensorflow
+5. Tkinter
+6. NumPy
+7. Pandas
+8. yt-dlp
+9. moviepy (**It is very important to note that moviepy's current version has tons of bugs that's why certain features won't work, I recommend using Version - 1.0.3 to avoid any problems in running and analyzing the model)
