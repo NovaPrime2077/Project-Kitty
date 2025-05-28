@@ -47,7 +47,7 @@ There are a few warnings that I wanted to give before we jump in, please bear wi
 2. **Phase_5.py** - I highly recommend using this file for **viewing purposes** since this file doesn't require any knowledge and technicality of the repo.
 **Please follow the video linked above to know how to run Phase_5.py**
 3. **main_test.py** - for testing the model from inside this file can also be used but I recommend using Phase_5.py instead.  
-4. **detector_tracker.py** - The file uses YOLOV11 and the model runs using GPU i.e. CUDA framework, I highly recommend using this feature of YOLO if you have a CUDA supported device and are going to run the main.py file.  
+4. **detector_tracker.py** - The file uses YOLOV11 and the model runs using GPU i.e. CUDA framework, I highly recommend using the feature of YOLO if you have a CUDA supported device and are going to run the main.py file.  
 5. It is very important to note that **moviepy's current version has tons of bugs** that's why certain features won't work, I recommend using Version - 1.0.3 to avoid any problems in running and analyzing the model if main.py will be used. 
 
 ## Requirements
